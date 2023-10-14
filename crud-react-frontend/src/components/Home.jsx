@@ -30,7 +30,6 @@ const Home = () => {
       </Helmet>
       <Header></Header>
       <h1 className="text-3xl font-semibold">This is Home component</h1>
-      <div className="">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
             <form onSubmit={handleAddUser} className="card-body">
@@ -91,7 +90,6 @@ const Home = () => {
             </form>
           </div>
         </div>
-      </div>
     </div>
   );
 };

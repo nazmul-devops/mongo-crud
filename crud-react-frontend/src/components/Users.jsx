@@ -1,11 +1,27 @@
 // import React from 'react';
 
-import { useLoaderData } from "react-router-dom";
+import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import Header from "./Header";
 import { Helmet } from "react-helmet-async";
 
 const Users = () => {
   const users = useLoaderData();
+  const navigate = useNavigate();
+
+  const handleDeleteUser = _id => {
+    console.log("Delete this user", _id);
+    fetch(`http://localhost:5001/users/${_id}`, {
+      method: "DELETE",
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        if (data.deletedCount > 0) {
+          alert("User deleted successfully");
+        }
+        navigate("/users");
+      });
+  };
 
   return (
     <div>
@@ -19,7 +35,7 @@ const Users = () => {
       <div>
         {users.map(user => (
           <div
-            key={user.id}
+            key={user._id}
             className="border w-1/2 mx-auto p-5 my-5 shadow-md rounded-lg"
           >
             <p className="text-xl font-medium">
@@ -42,16 +58,22 @@ const Users = () => {
               User Password:{" "}
               <span className="text-2xl font-semibold">{user.password}</span>
             </p>
+            <Link to={`/update/${user._id}`}>
+              <button className="btn bg-blue-400 hover:bg-blue-500 text-white my-5 mx-5">
+                Update User
+              </button>
+            </Link>
 
-            {/* Open the modal using document.getElementById('ID').showModal() method */}
             <button
-              className="btn bg-red-500 hover:bg-red-600 w-full font-bold text-white my-5"
-              onClick={() => document.getElementById("my_modal_5").showModal()}
+              className="btn bg-red-500 hover:bg-red-600 font-bold text-white my-5"
+              onClick={() =>
+                document.getElementById(`my_modal_${user._id}`).showModal()
+              }
             >
               Delete User
             </button>
             <dialog
-              id="my_modal_5"
+              id={`my_modal_${user._id}`}
               className="modal modal-bottom sm:modal-middle"
             >
               <div className="modal-box">
@@ -61,7 +83,12 @@ const Users = () => {
                 <div className="modal-action">
                   <form method="dialog">
                     {/* if there is a button in form, it will close the modal */}
-                    <button className="btn btn-error mr-3">Yes</button>
+                    <button
+                      onClick={() => handleDeleteUser(user._id)}
+                      className="btn btn-error mr-3"
+                    >
+                      Yes
+                    </button>
                     <button className="btn btn-info">Close</button>
                   </form>
                 </div>
